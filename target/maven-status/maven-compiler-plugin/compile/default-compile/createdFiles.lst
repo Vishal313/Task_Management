@@ -1,4 +1,3 @@
 com\tasking\Task_Management\Employee.class
 com\tasking\Task_Management\EmployeeController.class
-com\tasking\Task_Management\App.class
 com\tasking\Task_Management\EmployeeRepository.class

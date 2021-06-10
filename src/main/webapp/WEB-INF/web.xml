@@ -6,9 +6,9 @@
    <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
-        <init-param>
+         <init-param>
             <param-name>actionPackages</param-name>
-            <param-value>com.concretepage.action</param-value>
+            <param-value>com.tasking.Task_Management</param-value>
         </init-param>
     </filter>
   <filter-mapping>

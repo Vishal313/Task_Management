@@ -7,4 +7,21 @@
     <constant name="struts.convention.action.mapAllMatches" value="true"/>
     <constant name="struts.convention.default.parent.package" value="rest-default"/>
     <constant name="struts.convention.package.locators" value="rest"/>
+    
+    <constant name="struts.devMode" value="true" />
+	
+    <package name="default" namespace="/" extends="json-default,rest-default, struts-default">
+		<action name="employee" class="com.tasking.Task_Management.EmployeeController">
+			<result type = "json" name="index">
+				
+			</result>
+		</action> 
+		
+		<action name="credential" class="com.tasking.Task_Management.CredentialController">
+			<result type = "json" name="index">
+			</result>
+		</action> 
+		
+	</package>
+	 
 </struts>

@@ -9,7 +9,6 @@
 	<packaging>jar</packaging>
 
 	<name>Task_Management</name>
-	<url>http://maven.apache.org</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,6 +16,7 @@
 	</properties>
 
 	<build>
+		<finalName>Task_Management</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -43,13 +43,16 @@
 					</connectors>
 				</configuration>
 			</plugin>
-
 		</plugins>
-
 	</build>
 
 
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-core</artifactId>
+			<version>2.5.26</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.struts</groupId>
@@ -63,6 +66,23 @@
 			<version>2.5.26</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-json-plugin</artifactId>
+			<version>2.5.26</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-dojo-plugin</artifactId>
+			<version>2.3.37</version>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.25</version>
+		</dependency>
 
 
 	</dependencies>
