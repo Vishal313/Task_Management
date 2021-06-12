@@ -8,7 +8,6 @@ public class Employee {
 		this.id =id;
 		this.name = name;
 		this.company = company;
-		System.out.println("I am constructor !");
 	}
 	public Integer getId() {
 		return id;

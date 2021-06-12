@@ -1,21 +1,18 @@
 package com.tasking.Task_Management;
 import java.util.ArrayList;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 
 public class CredentialRepository{
 	private static ArrayList<Credential> credList = new ArrayList<Credential>();
 	
 	public CredentialRepository(){
+		credList = new ArrayList<Credential>();
 		String query = "SELECT * FROM credential";
 		
 		try {
-			ResultSet result = getFromDatabase(query);
+			ResultSet result = JDBC.getFromDatabase(query);
 			
 			while (result.next()) {
 				int emp_id = Integer.parseInt(result.getString(1));
@@ -32,26 +29,8 @@ public class CredentialRepository{
 		return credList;
 	}
 	
-	public ResultSet getFromDatabase(String query) {
-		String url = "jdbc:mysql://localhost:3306/task_management";
-		String uname = "root";
-		String password = "";
-		
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		ResultSet result = null;
-		try {
-			Connection con = DriverManager.getConnection(url, uname, password);
-			Statement statement = con.createStatement();
-			result = statement.executeQuery(query);
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
+	public void createNewCredential(int emp_id, String usrname, String password) {
+		String query = "INSERT INTO credential VALUES('"+emp_id+"', '"+usrname+"', '"+password+"')";
+		JDBC.insertIntoDatabase(query);
 	}
-	
 }
