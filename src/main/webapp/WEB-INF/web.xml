@@ -2,8 +2,9 @@
  "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 <web-app>
-  <display-name>Struts 2 REST Web Service</display-name>
-   <filter>
+  <display-name>Task_Management</display-name>
+
+    <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
          <init-param>
@@ -11,8 +12,20 @@
             <param-value>com.tasking.Task_Management</param-value>
         </init-param>
     </filter>
-  <filter-mapping>
-	<filter-name>struts2</filter-name>
-	<url-pattern>/*</url-pattern>
-  </filter-mapping>
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+<!--
+   <filter>
+    <filter-name>CorsFilter</filter-name>
+    <filter-class>com.tasking.Task_Management.CorsFilter</filter-class>
+  </filter>
+  	<filter-mapping>
+	    <filter-name>CorsFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+	  -->
+	  
 </web-app>

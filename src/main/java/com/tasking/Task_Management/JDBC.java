@@ -1,10 +1,17 @@
 package com.tasking.Task_Management;
 
+import java.io.BufferedReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class JDBC {
 	public static ResultSet getFromDatabase(String query) {
@@ -47,6 +54,21 @@ public class JDBC {
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static HashMap<String,String> pasrseRequest(HttpServletRequest request){
+		StringBuffer jb = new StringBuffer();
+		String line = null;
+		try {
+			BufferedReader reader = request.getReader();
+		    while ((line = reader.readLine()) != null)
+		    	jb.append(line);
+		} catch (Exception e) {
+			
+		}
+		String jsonString = jb.toString();
+		HashMap<String,String> map = new Gson().fromJson(jsonString, new TypeToken<HashMap<String, String>>(){}.getType());
+		return map;
 	}
 }
 
