@@ -1,4 +1,4 @@
-package com.tasking.Task_Management;
+package com.tasking.Task_Management.model;
 
 public class Credential {
 	private int employee_id;

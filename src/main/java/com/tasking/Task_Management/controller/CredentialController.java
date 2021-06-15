@@ -1,4 +1,8 @@
-package com.tasking.Task_Management;
+package com.tasking.Task_Management.controller;
+
+import com.tasking.Task_Management.service.*;
+import com.tasking.Task_Management.repository.*;
+import com.tasking.Task_Management.model.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,9 +27,11 @@ public class CredentialController {
 		method = ServletActionContext.getRequest().getMethod();
 		try {
 			if (method.equals("POST")) {
-				System.out.println("I am post!!");
 				checkCredentials();
-			}			
+			}	
+			else if (method.equals("PUT")) {
+				insertCredentials();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -34,15 +40,13 @@ public class CredentialController {
 	
 	public void checkCredentials() {
 		HttpServletRequest request = ServletActionContext.getRequest();
-		HashMap<String,String> map = JDBC.pasrseRequest(request);
+		HashMap<String,String> map = DBService.pasrseRequest(request);
 		HttpServletResponse res = ServletActionContext.getResponse();
+		ArrayList<Credential> credList = CredentialRepository.findAllCredential();
 		
-		CredentialRepository credRep = new CredentialRepository();
-		ArrayList<Credential> credList = credRep.findAllCredential();
 		boolean loggedIn = false;
 		int employee_id = 0;
 		for (int i = 0; i < credList.size(); i++) {
-			System.out.println();
 			String dbUser = credList.get(i).getUser_name();
 			String dbPass = credList.get(i).getPassword();
 			if (dbUser.equals(map.get("user_name")) && dbPass.equals(getMd5(map.get("password")))) {
@@ -54,22 +58,41 @@ public class CredentialController {
 		if (loggedIn) {
 			System.out.println("Login Successfull");
 			response.put("employee_id", employee_id);
+			response.put("status", "OK");
+			response.put("statuscode", 200);
+			res.setStatus(200);
 		} else {
 			System.out.println("Login Failed");
-			res.setStatus(401);			
+			res.setStatus(401);	
+			response.put("statuscode", 401);
+			response.put("status", "Unauthorized");
 		}
-		res.setHeader("Access-Control-Allow-Origin", "*");
+	}
+	
+	public void insertCredentials() {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HashMap<String,String> map = DBService.pasrseRequest(request);
+		HttpServletResponse res = ServletActionContext.getResponse();
 		
+		String is_successfull = CredentialRepository.createNewCredential(Integer.parseInt(map.get("employee_id")),
+				map.get("user_name"), getMd5(map.get("password")));
+		
+		if (is_successfull.equals("success")) {
+			response.put("statuscode", 200);
+			response.put("status", "OK");			
+			res.setStatus(200);
+		} else {
+			response.put("statuscode", 409);
+			response.put("status", "Conflict");
+			res.setStatus(409);
+		}
 	}
 	
 	public static String getMd5(String input) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
-			  
 	        byte[] messageDigest = md.digest(input.getBytes());
-	
 	        BigInteger no = new BigInteger(1, messageDigest);
-	
 	        String hashtext = no.toString(16);
 	        while (hashtext.length() < 32) {
 	            hashtext = "0" + hashtext;

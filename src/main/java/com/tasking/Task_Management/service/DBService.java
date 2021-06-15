@@ -1,4 +1,4 @@
-package com.tasking.Task_Management;
+package com.tasking.Task_Management.service;
 
 import java.io.BufferedReader;
 import java.sql.Connection;
@@ -13,14 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class JDBC {
+public class DBService implements DBQuery{
 	public static ResultSet getFromDatabase(String query) {
-		String url = "jdbc:mysql://localhost:3306/task_management";
+		String url = DBBASEURL;
 		String uname = "root";
 		String password = "";
 		
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName(DBDRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -36,13 +36,13 @@ public class JDBC {
 		return result;
 	}
 	
-	public static void insertIntoDatabase(String query) {
-		String url = "jdbc:mysql://localhost:3306/task_management";
+	public static String insertIntoDatabase(String query) {
+		String url = DBBASEURL;
 		String uname = "root";
 		String password = "";
 		
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName(DBDRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -53,7 +53,9 @@ public class JDBC {
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
+			return "fail";
 		}
+		return "success";
 	}
 	
 	public static HashMap<String,String> pasrseRequest(HttpServletRequest request){
