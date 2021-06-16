@@ -7,7 +7,6 @@ public class TaskStatus {
 	private String end_date;
 	
 	public TaskStatus(int task_status_id, String task_type, String start_date, String end_date) {
-		super();
 		this.task_status_id = task_status_id;
 		this.task_type = task_type;
 		this.start_date = start_date;

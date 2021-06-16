@@ -6,4 +6,6 @@ public interface DBQuery {
 	String GETALLCREDS = "SELECT * FROM credential";
 	
 	String GETALLPROJECTS = "SELECT * FROM project";
+	String GETALLTASK = "SELECT * FROM task";
+	String GETALLTASKSTATUS = "SELECT * FROM taskstatus";
 }

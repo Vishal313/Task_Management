@@ -5,9 +5,9 @@ public class Task {
 	private String task_name;
 	private int project_id;
 	private int current_task_status_id;
-	private boolean is_completed;
+	private int is_completed;
 	
-	public Task(int task_id, String task_name, int project_id, int current_task_status_id, boolean is_completed) {
+	public Task(int task_id, String task_name, int project_id, int current_task_status_id, int is_completed) {
 		super();
 		this.task_id = task_id;
 		this.task_name = task_name;
@@ -48,11 +48,11 @@ public class Task {
 		this.current_task_status_id = current_task_status_id;
 	}
 
-	public boolean isIs_completed() {
+	public int isIs_completed() {
 		return is_completed;
 	}
 
-	public void setIs_completed(boolean is_completed) {
+	public void setIs_completed(int is_completed) {
 		this.is_completed = is_completed;
 	}
 	

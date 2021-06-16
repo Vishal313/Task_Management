@@ -13,11 +13,11 @@
 	 		<result type="json" />	
 	 	</action>
 	 	
-	 	<action name="employee" class="com.tasking.Task_Management.controller.EmployeeController">
+	 	<action name="user" class="com.tasking.Task_Management.controller.EmployeeController">
 	 		<result type="json" />	
 	 	</action>
 	 	
-	 	<action name="task" class="com.tasking.Task_Management.controller.TaskController">
+	 	<action name="project/*" class="com.tasking.Task_Management.controller.TaskController">
 	 		<result type="json" />	
 	 	</action>
 	 	
