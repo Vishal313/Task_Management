@@ -19,7 +19,7 @@ public class CredentialController {
 	private String method;
 	private Map<String, Object> response = new HashMap<String, Object>();
 	
-	public Map<String, Object> getResponse(){
+	public Map<String, Object> getCredential(){
 		return response;
 	}
 	
@@ -45,27 +45,32 @@ public class CredentialController {
 		ArrayList<Credential> credList = CredentialRepository.findAllCredential();
 		
 		boolean loggedIn = false;
+		boolean userNameFlag = false;
 		int employee_id = 0;
 		for (int i = 0; i < credList.size(); i++) {
 			String dbUser = credList.get(i).getUser_name();
 			String dbPass = credList.get(i).getPassword();
+			if (dbUser.equals(map.get("user_name"))){
+				userNameFlag = true;
+			}
 			if (dbUser.equals(map.get("user_name")) && dbPass.equals(getMd5(map.get("password")))) {
 				loggedIn = true;
 				employee_id = credList.get(i).getEmployee_id();
 			}
 		}
-		
-		if (loggedIn) {
-			System.out.println("Login Successfull");
-			response.put("employee_id", employee_id);
-			response.put("status", "OK");
-			response.put("statuscode", 200);
-			res.setStatus(200);
+		if (userNameFlag) {
+			if (loggedIn) {
+				Map<String, Object> temp = new HashMap<String, Object>();
+				temp.put("id", employee_id);
+				response.put("employee", temp);
+				res.setStatus(200);
+			} else {
+				response.put("Message", "Password Is Incorrect!");
+				res.setStatus(401);	
+			}
 		} else {
-			System.out.println("Login Failed");
-			res.setStatus(401);	
-			response.put("statuscode", 401);
-			response.put("status", "Unauthorized");
+			response.put("Message", "Check Your UserName!");
+			res.setStatus(401);
 		}
 	}
 	
@@ -78,13 +83,11 @@ public class CredentialController {
 				map.get("user_name"), getMd5(map.get("password")));
 		
 		if (is_successfull.equals("success")) {
-			response.put("statuscode", 200);
-			response.put("status", "OK");			
 			res.setStatus(200);
+			response.put("Message", "Credentials Created Successfully!");
 		} else {
-			response.put("statuscode", 409);
-			response.put("status", "Conflict");
 			res.setStatus(409);
+			response.put("Message", "Cannot Create Credentials!");
 		}
 	}
 	

@@ -1,29 +1,30 @@
 package com.tasking.Task_Management.controller;
 
 import com.tasking.Task_Management.service.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.tasking.Task_Management.model.Task;
 import com.tasking.Task_Management.repository.*;
 import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
-import com.tasking.Task_Management.model.*;
-
 
 public class ProjectController {
 	private String method;
-	private Map<String, Object> response = new HashMap<String, Object>();
+	private ArrayList<Object> projects = new ArrayList<Object>();
 	
-	public Map<String, Object> getResponse(){
-		return response;
+	public ArrayList<Object> getProjects(){
+		return projects;
 	}
 	
 	public String execute() {
 		method = ServletActionContext.getRequest().getMethod();
 		try {
 			if (method.equals("GET")) {
-				getProjects();
+				getProjects1();
 			} 
 			else if (method.equals("POST")) {
 				createProject();
@@ -34,12 +35,23 @@ public class ProjectController {
 		return "success";
 	}
 	
-	public void getProjects() {
+	public void getProjects1() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-		ArrayList<Project> projectList = ProjectRepository.getAllProjects();
-		response.put("projectList", projectList);
-		response.put("status", "OK");
-		response.put("statuscode", 200);
+		HttpServletRequest request = ServletActionContext.getRequest();
+		
+		String project_id = null;
+		try {
+			project_id = request.getServletPath().substring(9, 10);
+		}
+		catch (Exception e) {}
+		
+		if (project_id != null) {
+			projects = ProjectRepository.getProjectById(project_id);
+			projects.add(TaskRepository.findTasksByProjectId(project_id));
+		}
+		else
+			projects = ProjectRepository.getAllProjects();
+		
 		res.setStatus(200);
 	}
 	
@@ -49,32 +61,15 @@ public class ProjectController {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		
 		String is_successfull = ProjectRepository.createNewProject(Integer.parseInt(map.get("project_id")), map.get("project_name"),
-				Integer.parseInt(map.get("employee_id")), Integer.parseInt(map.get("is_completed")));
+				Boolean.getBoolean(map.get("is_completed")));
 		
 		if (is_successfull.equals("success")) {
-			response.put("status", "OK");
-			response.put("statuscode", 200);
+			projects.add("Project Created Successfully!");
 			res.setStatus(200);
 		} else {
-			response.put("status", "Conflict");
-			response.put("statuscode", 409);
 			res.setStatus(409);
+			res.setHeader("message", "Cannot Create Project!");
+			projects.add("Cannot Create Project!");
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

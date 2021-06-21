@@ -17,7 +17,7 @@ public class EmployeeController {
 	private String method;
 	private Map<String, Object> response = new HashMap<String, Object>();
 	
-	public Map<String, Object> getResponse(){
+	public Map<String, Object> getEmployee(){
 		return response;
 	}
 	
@@ -37,18 +37,25 @@ public class EmployeeController {
 	
 	public void getEmployeeByID() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-		String employee_id = ServletActionContext.getRequest().getParameter("employee_id");
-		String manager_id = ServletActionContext.getRequest().getParameter("manager_id");
+		HttpServletRequest request = ServletActionContext.getRequest();
 		
-		ArrayList<Employee> empList = null;
+		String employee_id = null;
+		String manager_id = null;
+		
+		try {
+			employee_id = request.getServletPath().substring(6, 7); // http://localhost:8080/Task_Management/user/2/
+			manager_id = request.getServletPath().substring(9, 10); // http://localhost:8080/Task_Management/manager/2/
+		} catch (Exception e) {}
+		
+		System.out.println(employee_id);
+		
+		ArrayList<Object> empList = null;
 		if (employee_id != null)
-			 empList = EmployeeRepository.findEmployeeById("employee_id", employee_id);
-		else if (manager_id != null) {
+			 empList = EmployeeRepository.findEmployeeById("employee_id", employee_id); 
+		if (manager_id != null) 
 			empList = EmployeeRepository.findEmployeeById("manager_id", manager_id);
-		}
+		
 		response.put("employeedetails", empList);
-		response.put("status", "OK");
-		response.put("statuscode", 200);
 		res.setStatus(200);
 	}
 	
@@ -58,17 +65,15 @@ public class EmployeeController {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		
 		String is_successfull = EmployeeRepository.createEmployee(Integer.parseInt(map.get("employee_id")), map.get("employee_name"), 
-				map.get("employee_email"), Integer.parseInt(map.get("current_project_id")), Integer.parseInt(map.get("team_leader_id")),
-				Integer.parseInt(map.get("manager_id")), Integer.parseInt(map.get("hr_id")), Integer.parseInt(map.get("task_id")),
-				Integer.parseInt(map.get("is_hr")), Integer.parseInt(map.get("is_manager")), Integer.parseInt(map.get("is_tl")));
+				map.get("employee_email"), Integer.parseInt(map.get("team_leader_id")),	Integer.parseInt(map.get("manager_id")),
+				Integer.parseInt(map.get("hr_id")), Boolean.getBoolean(map.get("is_hr")), Boolean.getBoolean(map.get("is_manager")),
+				Boolean.getBoolean(map.get("is_tl")));
 		
 		if (is_successfull.equals("success")) {
-			response.put("status", "OK");
-			response.put("statuscode", 200);
+			response.put("message", "User Created Successfully!");
 			res.setStatus(200);
 		} else {
-			response.put("status", "Conflict");
-			response.put("statuscode", 409);
+			response.put("message", "User Creation Failed!");
 			res.setStatus(409);
 		}
 	}

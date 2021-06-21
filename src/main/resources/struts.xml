@@ -10,18 +10,37 @@
 	 	</action>
 	 	
 	 	<action name="project" class="com.tasking.Task_Management.controller.ProjectController">
+	 		<result type="json" />
+	 	</action>
+	 	
+	 	<action name="user/*/" class="com.tasking.Task_Management.controller.EmployeeController">
 	 		<result type="json" />	
 	 	</action>
 	 	
-	 	<action name="user" class="com.tasking.Task_Management.controller.EmployeeController">
+	 	<action name="manager/*/" class="com.tasking.Task_Management.controller.EmployeeController">
+	 		<result type="json" />	
+	 	</action>
+	 <!--	<action name="project/*" class="com.tasking.Task_Management.controller.TaskController">
+	 		<result type="json" />	
+	 	</action> -->
+	 	
+	 	<action name="project/*/" class="com.tasking.Task_Management.controller.ProjectController">
 	 		<result type="json" />	
 	 	</action>
 	 	
-	 	<action name="project/*" class="com.tasking.Task_Management.controller.TaskController">
+	 	<action name="project/*/task/" class="com.tasking.Task_Management.controller.TaskController">
+	 		<result type="json" />	
+	 	</action>
+	 	
+	 	<action name="project/*/task/*/" class="com.tasking.Task_Management.controller.TaskController">
 	 		<result type="json" />	
 	 	</action>
 	 	
 	 	<action name="taskstatus" class="com.tasking.Task_Management.controller.TaskStatusController">
+	 		<result type="json" />	
+	 	</action>
+	 	
+	 	<action name="taskstatus/*/" class="com.tasking.Task_Management.controller.TaskStatusController">
 	 		<result type="json" />	
 	 	</action>
 	 </package>
