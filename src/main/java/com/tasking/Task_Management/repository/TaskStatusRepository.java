@@ -10,7 +10,6 @@ public class TaskStatusRepository implements DBQuery {
 	
 	public static ArrayList<TaskStatus> findTaskStatusByTaskId(String task_id){
 		ArrayList<TaskStatus> taskStatusList = new ArrayList<TaskStatus>();
-//		String query = GETALLTASKSTATUS;
 		String query = "SELECT * FROM taskstatus WHERE task_id = '"+task_id+"' ";
 		
 		try {
@@ -30,8 +29,10 @@ public class TaskStatusRepository implements DBQuery {
 		return taskStatusList;
 	}
 	
-	public static String createNewTaskStatus(int task_status_id, int task_id, String task_type, String start_date, String end_date) {
-		String query = "INSERT INTO taskstatus VALUES('"+task_status_id+"', '"+task_id+"' , '"+task_type+"', '"+start_date+"', '"+end_date+"')";
+	public static String createNewTaskStatus(int task_id, String task_type, String start_date, String end_date) {
+		String query = "INSERT INTO taskstatus(task_id, task_type, start_date, end_date) VALUES('"+task_id+"' , '"+task_type+"', '"+start_date+"', '"+end_date+"')";
+		String query2 = "UPDATE task SET current_task_status = '"+task_type+"' WHERE task_id = '"+task_id+"'";
+		DBService.insertIntoDatabase(query2);
 		return DBService.insertIntoDatabase(query);
 	}
 	

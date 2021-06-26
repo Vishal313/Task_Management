@@ -19,7 +19,7 @@ public class ProjectRepository implements DBQuery{
 			while (result.next()) {
 				int proj_id = Integer.parseInt(result.getString(1));
 				String proj_name = result.getString(2);
-				boolean is_comp = Boolean.getBoolean(result.getString(3));
+				boolean is_comp = result.getString(3).equals("1") ? true : false;
 				projectList.add(new Project(proj_id, proj_name, is_comp));
 			}
 		}
@@ -38,7 +38,7 @@ public class ProjectRepository implements DBQuery{
 			while (result.next()) {
 				int proj_id = Integer.parseInt(result.getString(1));
 				String proj_name = result.getString(2);
-				boolean is_comp = Boolean.getBoolean(result.getString(3));
+				boolean is_comp = result.getString(3).equals("1") ? true : false;
 				projectList.add(new Project(proj_id, proj_name, is_comp));
 			}
 		}
@@ -48,9 +48,29 @@ public class ProjectRepository implements DBQuery{
 		return projectList;
 	}
 	
-	public static String createNewProject(int project_id, String project_name, boolean is_completed) {
-		int is_comp = is_completed ? 1 : 0;
-		String query = "INSERT INTO project VALUES('"+project_id+"', '"+project_name+"', '"+is_comp+"')";
-		return DBService.insertIntoDatabase(query);
+	public static ArrayList<Object> getProjectByManagerId(String manager_id){
+		ArrayList<Object> projectList = new ArrayList<Object>();
+		String query = "SELECT project.* FROM project INNER JOIN project_employee_map ON project_employee_map.project_id = project.project_id WHERE project_employee_map.employee_id = '"+manager_id+"'";
+		
+		try {
+			ResultSet result = DBService.getFromDatabase(query);
+			while (result.next()) {
+				int proj_id = Integer.parseInt(result.getString(1));
+				String proj_name = result.getString(2);
+				boolean is_comp = result.getString(3).equals("1") ? true : false;
+				projectList.add(new Project(proj_id, proj_name, is_comp));
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return projectList;
+	}
+	
+	public static String createNewProject(String project_name, String employee_id) {
+		String query = "INSERT INTO project(project_name, is_completed) VALUES('"+project_name+"', 0)";
+		DBService.insertIntoDatabase(query);
+		String q1 = "INSERT INTO project_employee_map VALUES((SELECT MAX(project_id) FROM project) , '"+employee_id+"')";
+		return DBService.insertIntoDatabase(q1);
 	}
 }

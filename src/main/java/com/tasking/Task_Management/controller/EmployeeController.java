@@ -3,15 +3,14 @@ package com.tasking.Task_Management.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts2.ServletActionContext;
-
-import com.tasking.Task_Management.model.Employee;
 import com.tasking.Task_Management.repository.EmployeeRepository;
+import com.tasking.Task_Management.repository.ProjectRepository;
+import com.tasking.Task_Management.repository.TaskRepository;
 import com.tasking.Task_Management.service.DBService;
+import com.tasking.Task_Management.model.Task;
 
 public class EmployeeController {
 	private String method;
@@ -23,38 +22,43 @@ public class EmployeeController {
 	
 	public String execute() {
 		method = ServletActionContext.getRequest().getMethod();
-		try {
-			if (method.equals("GET")) {
+		if (method.equals("GET")) {
+			if (ServletActionContext.getRequest().getServletPath().contains("task"))
+				getTaskByEmployeeID();
+			else
 				getEmployeeByID();
-			} else if (method.equals("POST")) {
-				insertEmployee();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
+		} else if (method.equals("POST")) {
+			insertEmployee();
+		}
 		return "success";
+	}
+	
+	public void getTaskByEmployeeID() {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String servletPath = request.getServletPath(); // http://localhost:8080/Task_Management/user/12/task/
+		String employee_id = servletPath.split("/")[2];
+		ArrayList<Task> taskList = TaskRepository.findTaskByEmployeeId(employee_id);
+		response.put("taskDetails", taskList);
 	}
 	
 	public void getEmployeeByID() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		HttpServletRequest request = ServletActionContext.getRequest();
-		
-		String employee_id = null;
-		String manager_id = null;
-		
-		try {
-			employee_id = request.getServletPath().substring(6, 7); // http://localhost:8080/Task_Management/user/2/
-			manager_id = request.getServletPath().substring(9, 10); // http://localhost:8080/Task_Management/manager/2/
-		} catch (Exception e) {}
-		
-		System.out.println(employee_id);
-		
+		String servletPath = request.getServletPath();
 		ArrayList<Object> empList = null;
-		if (employee_id != null)
-			 empList = EmployeeRepository.findEmployeeById("employee_id", employee_id); 
-		if (manager_id != null) 
-			empList = EmployeeRepository.findEmployeeById("manager_id", manager_id);
 		
+		if (servletPath.contains("user/")) {
+			String employee_id = servletPath.split("/")[2]; // http://localhost:8080/Task_Management/user/2/
+			empList = EmployeeRepository.findEmployeeById("employee_id", employee_id);
+		}
+		else if (servletPath.contains("user")) {
+			empList = EmployeeRepository.findEmployeeById("allemp", "0");
+		}
+		else if (servletPath.contains("manager")) {
+			String manager_id = servletPath.split("/")[2]; // http://localhost:8080/Task_Management/manager/2/
+			empList = EmployeeRepository.findEmployeeById("manager_id", manager_id);
+			response.put("projectList", ProjectRepository.getProjectByManagerId(manager_id));
+		}
 		response.put("employeedetails", empList);
 		res.setStatus(200);
 	}

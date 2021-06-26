@@ -21,7 +21,7 @@ public class TaskRepository implements DBQuery{
 				String tsk_nm = result.getString(2);
 //				int proj_id = Integer.parseInt(result.getString(3));
 				String curr_tsk_sts = result.getString(4);
-				boolean tsk_iscomp = Boolean.getBoolean(result.getString(5));
+				boolean tsk_iscomp = result.getString(5).equals("1") ? true : false;
 				taskList.add(new Task(tsk_id, tsk_nm, curr_tsk_sts, tsk_iscomp));
 			}
 		}
@@ -31,25 +31,26 @@ public class TaskRepository implements DBQuery{
 		return taskList;
 	}
 	
-//	public static ArrayList<Task> findTasksByProjectId(String project_id){
-//		ArrayList<Task> taskList = new ArrayList<Task>();
-//		String query = "SELECT * FROM task WHERE project_id = '"+project_id+"'";
-//		try {
-//			ResultSet result = DBService.getFromDatabase(query);
-//			while (result.next()) {
-//				int tsk_id = Integer.parseInt(result.getString(1));
-//				String tsk_nm = result.getString(2);
-////				int proj_id = Integer.parseInt(result.getString(3));
-//				String curr_tsk_sts = result.getString(4);
+	public static ArrayList<Task> findTaskByEmployeeId(String employee_id) {
+		ArrayList<Task> taskList = new ArrayList<Task>();
+		String query = "SELECT task.* FROM task INNER JOIN task_employee_map ON task.task_id = task_employee_map.task_id WHERE task_employee_map.employee_id = '"+employee_id+"' ";
+		try {
+			ResultSet result = DBService.getFromDatabase(query);
+			while (result.next()) {
+				int tsk_id = Integer.parseInt(result.getString(1));
+				String tsk_nm = result.getString(2);
+//				int proj_id = Integer.parseInt(result.getString(3));
+				String curr_tsk_sts = result.getString(4);
 //				boolean tsk_iscomp = Boolean.getBoolean(result.getString(5));
-//				taskList.add(new Task(tsk_id, tsk_nm, curr_tsk_sts, tsk_iscomp));
-//			}
-//		}
-//		catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return taskList;
-//	}
+				boolean tsk_iscomp = result.getString(5).equals("1") ? true : false;
+				taskList.add(new Task(tsk_id, tsk_nm, curr_tsk_sts, tsk_iscomp));
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return taskList;
+	}
 	
 	public static Map<String, ArrayList<Task>> findTasksByProjectId(String project_id){
 		ArrayList<Task> taskList = new ArrayList<Task>();
@@ -59,9 +60,8 @@ public class TaskRepository implements DBQuery{
 			while (result.next()) {
 				int tsk_id = Integer.parseInt(result.getString(1));
 				String tsk_nm = result.getString(2);
-//				int proj_id = Integer.parseInt(result.getString(3));
 				String curr_tsk_sts = result.getString(4);
-				boolean tsk_iscomp = Boolean.getBoolean(result.getString(5));
+				boolean tsk_iscomp = result.getString(5).equals("1") ? true : false;
 				taskList.add(new Task(tsk_id, tsk_nm, curr_tsk_sts, tsk_iscomp));
 			}
 		}
@@ -81,9 +81,8 @@ public class TaskRepository implements DBQuery{
 			while (result.next()) {
 				int tsk_id = Integer.parseInt(result.getString(1));
 				String tsk_nm = result.getString(2);
-//				int proj_id = Integer.parseInt(result.getString(3));
 				String curr_tsk_sts = result.getString(4);
-				boolean tsk_iscomp = Boolean.getBoolean(result.getString(5));
+				boolean tsk_iscomp = result.getString(5).equals("1") ? true : false;
 				taskList.add(new Task(tsk_id, tsk_nm, curr_tsk_sts, tsk_iscomp));
 			}
 		}
@@ -93,10 +92,12 @@ public class TaskRepository implements DBQuery{
 		return taskList;
 	}
 	
-	public static String createNewTask(int task_id, String task_name, int project_id, String current_task_status,boolean is_completed) {
+	public static String createNewTask(String task_name, int project_id, String current_task_status,boolean is_completed, int employee_id) {
 		int is_comp = is_completed ? 1 : 0;
-		String query = "INSERT INTO task VALUES('"+task_id+"', '"+task_name+"', '"+project_id+"', '"+current_task_status+"' ,'"+is_comp+"')";
-		return DBService.insertIntoDatabase(query);
+		String query = "INSERT INTO task(task_name, project_id, current_task_status, is_completed) VALUES('"+task_name+"', '"+project_id+"', '"+current_task_status+"' ,'"+is_comp+"')";
+		String query1 = "INSERT INTO task_employee_map VALUES((SELECT MAX(task_id) FROM task), '"+employee_id+"')";
+		DBService.insertIntoDatabase(query);
+		return DBService.insertIntoDatabase(query1);
 	}
 	
 	public static String updateTask(int task_id, String task_name, int project_id, String current_task_status, boolean is_completed) {
@@ -110,5 +111,9 @@ public class TaskRepository implements DBQuery{
 		return DBService.insertIntoDatabase(query);
 	}
 	
+	public static String createEmployeeTaskMap(int employee_id) {
+		String query = "INSERT INTO task_employee_map VALUES((SELECT MAX(task_id) FROM task), '"+employee_id+"')";
+		return DBService.insertIntoDatabase(query);		
+	}
 	
 }

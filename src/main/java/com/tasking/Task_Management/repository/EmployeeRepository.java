@@ -14,6 +14,9 @@ public class EmployeeRepository implements DBQuery {
 		ArrayList<Object> empList = new ArrayList<Object>();
 		String query = "SELECT * FROM employee WHERE "+condition+" = '"+id+"'";
 		
+		if (condition.equals("allemp"))
+			query = "SELECT * FROM employee";
+		
 		try {
 			ResultSet result = DBService.getFromDatabase(query);
 			while (result.next()) {
@@ -24,9 +27,9 @@ public class EmployeeRepository implements DBQuery {
 				String team_leader_id = result.getString(4);
 				String manager_id = result.getString(5);
 				String hr_id = result.getString(6);
-				boolean is_hr = Boolean.getBoolean(result.getString(7));
-				boolean is_manager = Boolean.getBoolean(result.getString(8));
-				boolean is_tl = Boolean.getBoolean(result.getString(9));
+				boolean is_hr = result.getString(7).equals("1") ? true : false;
+				boolean is_manager = result.getString(8).equals("1") ? true : false;
+				boolean is_tl = result.getString(9).equals("1") ? true : false;
 				Map<String, Object> mp = new HashMap<String, Object>();
 				mp.put("employee_id", employee_id);
 				mp.put("employee_name", employee_name);
@@ -83,5 +86,30 @@ public class EmployeeRepository implements DBQuery {
 			e.printStackTrace();
 		}
 		return employee_name;
+	}
+	
+	public static String findDesignation(String employee_id) {
+		String query = "SELECT * FROM employee WHERE employee_id = '"+employee_id+"'";
+		String desgn = "";
+		try {
+			ResultSet result = DBService.getFromDatabase(query);
+			while (result.next()) {
+				String is_hr = result.getString(7);
+				String is_manager = result.getString(8);
+				String is_tl = result.getString(9);
+				if (is_hr.equals("1"))
+					desgn = "HR";
+				else if (is_manager.equals("1"))
+					desgn = "Manager";
+				else if (is_tl.equals("1"))
+					desgn = "TL";
+				else 
+					desgn = "Employee";
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return desgn;
 	}
 }

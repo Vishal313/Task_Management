@@ -17,12 +17,17 @@
 	 		<result type="json" />	
 	 	</action>
 	 	
+	 	<action name="user" class="com.tasking.Task_Management.controller.EmployeeController">
+	 		<result type="json" />	
+	 	</action>
+	 	
+	 	<action name="user/*/task/" class="com.tasking.Task_Management.controller.EmployeeController">
+	 		<result type="json" />	
+	 	</action>
+	 	
 	 	<action name="manager/*/" class="com.tasking.Task_Management.controller.EmployeeController">
 	 		<result type="json" />	
 	 	</action>
-	 <!--	<action name="project/*" class="com.tasking.Task_Management.controller.TaskController">
-	 		<result type="json" />	
-	 	</action> -->
 	 	
 	 	<action name="project/*/" class="com.tasking.Task_Management.controller.ProjectController">
 	 		<result type="json" />	

@@ -23,7 +23,7 @@ public class TaskStatusController {
 		method = ServletActionContext.getRequest().getMethod();
 		try {
 			if (method.equals("GET")) {
-				getTaskStatus1();
+				getTaskStatusById();
 			} else if (method.equals("POST")) {
 				createTaskStatus();
 			} else if (method.equals("PUT")) {
@@ -38,10 +38,11 @@ public class TaskStatusController {
 		return "success";
 	}
 	
-	public void getTaskStatus1() {
+	public void getTaskStatusById() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		HttpServletRequest request = ServletActionContext.getRequest();
-		String task_id = request.getServletPath().substring(12, 13); 
+		String servletPath = request.getServletPath();
+		String task_id = servletPath.substring(12, servletPath.length()-1); 
 		
 		ArrayList<TaskStatus> taskStatusList = TaskStatusRepository.findTaskStatusByTaskId(task_id);
 		response.put("taskStatusList", taskStatusList);
@@ -55,8 +56,8 @@ public class TaskStatusController {
 		
 		System.out.println(map.get("task_status_id"));
 		
-		String is_successfull = TaskStatusRepository.createNewTaskStatus(Integer.parseInt(map.get("task_status_id")), Integer.parseInt(map.get("task_id")),
-				map.get("task_type"), map.get("start_date"), map.get("end_date"));
+		String is_successfull = TaskStatusRepository.createNewTaskStatus(Integer.parseInt(map.get("task_id")),map.get("task_type"),
+				map.get("start_date"), map.get("end_date"));
 		
 		if (is_successfull.equals("success")) {
 			response.put("message", "Task Status Created Successfully!");

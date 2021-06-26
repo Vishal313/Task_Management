@@ -62,6 +62,9 @@ public class CredentialController {
 			if (loggedIn) {
 				Map<String, Object> temp = new HashMap<String, Object>();
 				temp.put("id", employee_id);
+				String desgn = EmployeeRepository.findDesignation(String.valueOf(employee_id));
+				
+				temp.put("designation", desgn);
 				response.put("employee", temp);
 				res.setStatus(200);
 			} else {

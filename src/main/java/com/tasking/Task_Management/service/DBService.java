@@ -2,23 +2,19 @@ package com.tasking.Task_Management.service;
 
 import java.io.BufferedReader;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-
 import javax.servlet.http.HttpServletRequest;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class DBService implements DBQuery{
+	static DBHelper dbhelper = new DBHelper();
+	static Connection con = dbhelper.getConn();
+	
 	public static ResultSet getFromDatabase(String query) {
-		String url = DBBASEURL;
-		String uname = "root";
-		String password = "";
-		
 		try {
 			Class.forName(DBDRIVER);
 		} catch (ClassNotFoundException e) {
@@ -26,7 +22,6 @@ public class DBService implements DBQuery{
 		}
 		ResultSet result = null;
 		try {
-			Connection con = DriverManager.getConnection(url, uname, password);
 			Statement statement = con.createStatement();
 			result = statement.executeQuery(query);
 			
@@ -37,17 +32,12 @@ public class DBService implements DBQuery{
 	}
 	
 	public static String insertIntoDatabase(String query) {
-		String url = DBBASEURL;
-		String uname = "root";
-		String password = "";
-		
 		try {
 			Class.forName(DBDRIVER);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		try {
-			Connection con = DriverManager.getConnection(url, uname, password);
 			Statement statement = con.createStatement();
 			statement.executeUpdate(query);
 		}

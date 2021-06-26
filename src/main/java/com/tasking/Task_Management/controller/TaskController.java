@@ -76,8 +76,8 @@ public class TaskController {
 		HashMap<String,String> map = DBService.pasrseRequest(request);
 		HttpServletResponse res = ServletActionContext.getResponse();
 		
-		String is_successfull = TaskRepository.createNewTask(Integer.parseInt(map.get("task_id")), map.get("task_name"),
-				Integer.parseInt(map.get("project_id")), map.get("current_task_status"), Boolean.getBoolean(map.get("is_completed")));
+		String is_successfull = TaskRepository.createNewTask(map.get("task_name"),Integer.parseInt(map.get("project_id")),
+				map.get("current_task_status"), map.get("is_completed").equals("true") ? true : false, Integer.parseInt(map.get("employee_id")));
 		
 		if (is_successfull.equals("success")) {
 			response.put("Message", "Task Created Successfully!");
