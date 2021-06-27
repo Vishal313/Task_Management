@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tasking.Task_Management.model.Employee;
+import com.tasking.Task_Management.controller.CredentialController;
 import com.tasking.Task_Management.service.*;
 
 public class EmployeeRepository implements DBQuery {
@@ -23,7 +23,6 @@ public class EmployeeRepository implements DBQuery {
 				int employee_id = Integer.parseInt(result.getString(1));
 				String employee_name = result.getString(2);
 				String employee_email = result.getString(3);
-				//int team_leader_id = Integer.parseInt(result.getString(4));
 				String team_leader_id = result.getString(4);
 				String manager_id = result.getString(5);
 				String hr_id = result.getString(6);
@@ -55,7 +54,6 @@ public class EmployeeRepository implements DBQuery {
 				mp.put("is_tl", is_tl);
 				
 				empList.add(mp);
-				// empList.add(new Employee(employee_id, employee_name, employee_email, team_leader_id, manager_id, hr_id, is_hr, is_manager, is_tl));
 			}
 		}
 		catch (SQLException e) {
@@ -64,12 +62,25 @@ public class EmployeeRepository implements DBQuery {
 		return empList;
 	}
 	
-	public static String createEmployee(int employee_id, String employee_name, String employee_email, int team_leader_id, 
-			int manager_id, int hr_id, boolean is_hr, boolean is_manager, boolean is_tl) {
-		int ih = is_hr ? 1: 0;
-		int im = is_manager? 1: 0;
-		int itl = is_tl ? 1: 0;
-		String query = "INSERT INTO employee VALUES('"+employee_id+"', '"+employee_name+"', '"+employee_email+"', '"+team_leader_id+"', '"+manager_id+"', '"+hr_id+"', '"+ih+"', '"+im+"', '"+itl+"') ";                      
+	public static String createEmployee(String employee_name, String employee_email, String team_leader_id, 
+			String manager_id, String hr_id, boolean is_hr, boolean is_manager, boolean is_tl) {
+		
+		ResultSet result = DBService.getFromDatabase(GETEMPLOYEEID);
+		String newEmpId = null;
+		try {
+			while (result.next())
+				newEmpId = result.getString(1);
+		} catch (SQLException e) {}
+		
+		String query = null;
+		if (is_manager) {
+			query = "INSERT INTO employee VALUES('"+newEmpId+"', '"+employee_name+"', '"+employee_email+"', -1, '"+newEmpId+"', '"+hr_id+"', 0, 1, 0)";
+		} else if (is_tl) {
+			query = "INSERT INTO employee VALUES('"+newEmpId+"', '"+employee_name+"', '"+employee_email+"', '"+newEmpId+"', '"+manager_id+"', '"+hr_id+"', 0, 0, 1)";
+		} else {
+			query = "INSERT INTO employee VALUES('"+newEmpId+"', '"+employee_name+"', '"+employee_email+"', '"+team_leader_id+"', '"+manager_id+"', '"+hr_id+"', 0, 0, 0)";
+		}
+		CredentialRepository.createNewCredential(Integer.parseInt(newEmpId), employee_name, CredentialController.getMd5(employee_name));
 		return DBService.insertIntoDatabase(query);
 	}
 	

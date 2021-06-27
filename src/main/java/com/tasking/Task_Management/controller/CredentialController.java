@@ -16,7 +16,6 @@ import org.apache.struts2.ServletActionContext;
 
 
 public class CredentialController {
-	private String method;
 	private Map<String, Object> response = new HashMap<String, Object>();
 	
 	public Map<String, Object> getCredential(){
@@ -24,17 +23,11 @@ public class CredentialController {
 	}
 	
 	public String execute() {
-		method = ServletActionContext.getRequest().getMethod();
-		try {
-			if (method.equals("POST")) {
-				checkCredentials();
-			}	
-			else if (method.equals("PUT")) {
-				insertCredentials();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
+		String method = ServletActionContext.getRequest().getMethod();
+		if (method.equals("POST")) 
+			checkCredentials();
+		else if (method.equals("PUT")) 
+			insertCredentials();
 		return "success";
 	}
 	
@@ -82,7 +75,11 @@ public class CredentialController {
 		HashMap<String,String> map = DBService.pasrseRequest(request);
 		HttpServletResponse res = ServletActionContext.getResponse();
 		
-		String is_successfull = CredentialRepository.createNewCredential(Integer.parseInt(map.get("employee_id")),
+		String is_successfull = null;
+		if (map.get("user_name") == null) 
+			is_successfull = CredentialRepository.updateCredential(map.get("employee_id"), getMd5(map.get("password")));
+		else 
+		    is_successfull = CredentialRepository.createNewCredential(Integer.parseInt(map.get("employee_id")),
 				map.get("user_name"), getMd5(map.get("password")));
 		
 		if (is_successfull.equals("success")) {

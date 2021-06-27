@@ -31,4 +31,9 @@ public class CredentialRepository implements DBQuery{
 		String query = "INSERT INTO credential VALUES('"+emp_id+"', '"+usrname+"', '"+password+"')";
 		return DBService.insertIntoDatabase(query);
 	}
+	
+	public static String updateCredential(String employee_id, String password) {
+		String query = "UPDATE credential SET password = '"+password+"' WHERE employee_id = '"+employee_id+"'";
+		return DBService.insertIntoDatabase(query);
+	}
 }

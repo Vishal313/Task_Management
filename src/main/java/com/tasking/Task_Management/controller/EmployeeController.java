@@ -68,10 +68,10 @@ public class EmployeeController {
 		HashMap<String,String> map = DBService.pasrseRequest(request);
 		HttpServletResponse res = ServletActionContext.getResponse();
 		
-		String is_successfull = EmployeeRepository.createEmployee(Integer.parseInt(map.get("employee_id")), map.get("employee_name"), 
-				map.get("employee_email"), Integer.parseInt(map.get("team_leader_id")),	Integer.parseInt(map.get("manager_id")),
-				Integer.parseInt(map.get("hr_id")), Boolean.getBoolean(map.get("is_hr")), Boolean.getBoolean(map.get("is_manager")),
-				Boolean.getBoolean(map.get("is_tl")));
+		String is_successfull = EmployeeRepository.createEmployee(map.get("employee_name"), 
+				map.get("employee_email"), map.get("team_leader_id"), map.get("manager_id"),
+				map.get("hr_id"), map.get("is_hr").equals("true") ? true : false, map.get("is_manager").equals("true") ? true : false,
+				map.get("is_tl").equals("true") ? true : false);
 		
 		if (is_successfull.equals("success")) {
 			response.put("message", "User Created Successfully!");

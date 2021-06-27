@@ -8,4 +8,5 @@ public interface DBQuery {
 	String GETALLPROJECTS = "SELECT * FROM project";
 	String GETALLTASK = "SELECT * FROM task";
 	String GETALLTASKSTATUS = "SELECT * FROM taskstatus";
+	String GETEMPLOYEEID = "SELECT MAX(employee_id) + 1 FROM employee";
 }
